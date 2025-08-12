@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require("path");
 const app = express();
 const http = require("http").createServer(app);
 const io = require("socket.io")(http, {
@@ -7,10 +8,8 @@ const io = require("socket.io")(http, {
     }
 });
 
-const path = require("path");
 app.use(express.static(path.join(__dirname, "public")));
 
-// Stato iniziale delle chips
 let players = [
     { name: "Giocatore 1", chips: 1000 },
     { name: "Giocatore 2", chips: 1000 },
@@ -19,7 +18,6 @@ let players = [
 ];
 
 io.on("connection", (socket) => {
-    console.log("Nuovo giocatore collegato");
     socket.emit("state", players);
 
     socket.on("changeChips", (data) => {
