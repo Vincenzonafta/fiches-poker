@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Chips Poker</title>
+    <style>
+        body { font-family: sans-serif; background: #0a0a0a; color: white; text-align: center; }
+        .player { margin: 20px; padding: 10px; border: 1px solid #555; border-radius: 8px; display: inline-block; width: 200px; }
+        button { font-size: 18px; margin: 5px; padding: 5px 10px; }
+        .chips { font-size: 24px; }
+    </style>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+</head>
+<body>
+<h1>Contatore Chips</h1>
+<div id="players"></div>
+
+<script>
+    const socket = io();
+
+    socket.on("state", (players) => {
+        document.getElementById("players").innerHTML = players.map((p,i) => `
+    <div class="player">
+      <h2>${p.name}</h2>
+      <div class="chips">${p.chips} chips</div>
+      <button onclick="changeChips(${i}, -10)">-10</button>
+      <button onclick="changeChips(${i}, -50)">-50</button>
+      <button onclick="changeChips(${i}, 10)">+10</button>
+      <button onclick="changeChips(${i}, 50)">+50</button>
+    </div>
+  `).join('');
+    });
+
+    function changeChips(index, amount) {
+        socket.emit("changeChips", { index, amount });
+    }
+</script>
+</body>
+</html>
